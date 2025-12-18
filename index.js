@@ -49,3 +49,14 @@ function updateTask(id,newTitle){
     writeTasks(tasks);
     console.log("task updated successfully");
 }
+function deleteTask(id){
+    const tasks=readTasks();
+    const task=tasks.find(t=> t.id===Number(id));
+    if(!task){
+        console.log("Task not found");
+        return;
+    }
+    tasks.pop(task);
+    writeTasks(tasks);
+    console.log("task deleted successfully");
+}
