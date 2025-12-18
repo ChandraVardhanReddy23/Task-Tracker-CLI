@@ -72,6 +72,19 @@ function markTask(id,status){
     writeTasks(tasks);
     console.log(`task marked as ${status}`);
 }
+function listTasksByStatus(status) {
+    const tasks=readTasks();
+    const filteredTasks=tasks.filter(t => t.status===status);
+    if (filteredTasks.length===0) {
+        console.log(`No tasks with status "${status}"`);
+        return;
+    }
+    filteredTasks.forEach(t =>
+        console.log(
+            `[${t.id}] ${t.title}--${t.status}--created on ${t.createdAt}--updated on ${t.UpdatedAt}`
+        )
+    );
+}
 
 switch(cmd){
     case 'add':
@@ -90,13 +103,24 @@ switch(cmd){
         markTask(arg[1],'in-progress');
         break;
     case 'list':
-        listTask();
+        const status=arg[1];
+        const validStatuses=["todo", "in-progress", "done"];
+        if (!status){
+            listTask();
+        }else if(validStatuses.includes(status)) {
+            listTasksByStatus(status);
+        }else{
+            console.log("Invalid status. Use: todo | in-progress | done");
+        }
         break;
     default:
         console.log(`
             Available commands:
             add "task name"
             list
+            list done
+            list todo
+            list in-progress
             update <id> "new name"
             mark-in-progress <id>
             mark-done <id>
