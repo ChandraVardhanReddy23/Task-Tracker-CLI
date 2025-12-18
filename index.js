@@ -37,3 +37,15 @@ function listTask(){
         console.log(`[${t.id}] ${t.title}--${t.status}--created on ${t.createdAt}--updated on ${t.UpdatedAt}`)
     );
 }
+function updateTask(id,newTitle){
+    const tasks=readTasks();
+    const task=tasks.find(t=>t.id===Number(id));
+    if(!task){
+        console.log("Task not found");
+        return;
+    }
+    task.title=newTitle;
+    tasks.push(task);
+    writeTasks(tasks);
+    console.log("task updated successfully");
+}
