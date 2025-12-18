@@ -2,10 +2,10 @@ const fs=require('fs');
 const path=require('path');
 const filepath=path.join(__dirname,'task.json');
 function readTasks(){
-    JSON.parse(fs.readFileSync(filepath,'utf-8'));
+    return JSON.parse(fs.readFileSync(filepath,'utf-8'));
 }
 function writeTasks(tasks){
-    JSON.parse(fs.writeFileSync(filepath,JSON.stringify(tasks,null,2)));
+    return fs.writeFileSync(filepath,JSON.stringify(tasks,null,2));
 }
 const arg=process.argv.slice(2);
 const cmd=arg[0];
@@ -45,7 +45,7 @@ function updateTask(id,newTitle){
         return;
     }
     task.title=newTitle;
-    tasks.push(task);
+    task.UpdatedAt = new Date().toString();
     writeTasks(tasks);
     console.log("task updated successfully");
 }
@@ -56,7 +56,51 @@ function deleteTask(id){
         console.log("Task not found");
         return;
     }
-    tasks.pop(task);
-    writeTasks(tasks);
+    const updatedTasks = tasks.filter(t=> t.id!==Number(id));
+    writeTasks(updatedTasks);
     console.log("task deleted successfully");
+}
+function markTask(id,status){
+    const tasks=readTasks();
+    const task=tasks.find(t=> t.id===Number(id));
+    if(!task){
+        console.log("Task not found");
+        return;
+    }
+    task.status=status;
+    task.UpdatedAt = new Date().toString();
+    writeTasks(tasks);
+    console.log(`task marked as ${status}`);
+}
+
+switch(cmd){
+    case 'add':
+        addTask(arg.slice(1).join(' '));
+        break;
+    case 'update':
+        updateTask(arg[1],arg.slice(2).join(' '));
+        break;
+    case 'delete':
+        deleteTask(arg[1]);
+        break;
+    case 'mark-done':
+        markTask(arg[1],'done');
+        break;
+    case 'mark-in-progress':
+        markTask(arg[1],'in-progress');
+        break;
+    case 'list':
+        listTask();
+        break;
+    default:
+        console.log(`
+            Available commands:
+            add "task name"
+            list
+            update <id> "new name"
+            mark-in-progress <id>
+            mark-done <id>
+            delete <id>    
+        `);
+
 }
