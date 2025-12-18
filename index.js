@@ -20,9 +20,20 @@ function addTask(title){
         id:tasks.length+1,
         title,
         status:'todo',
-        createdOn:new Date().toString()
+        createdAt:new Date().toString(),
+        UpdatedAt:new Date().toString()
     };
     tasks.push(task);
     writeTasks(tasks);
     console.log("Task added successfully");
+}
+function listTask(){
+    const tasks=readTasks();
+    if(tasks.length===0){
+        console.log("There are no tasks");
+        return;
+    }
+    tasks.forEach(t=>
+        console.log(`[${t.id}] ${t.title}--${t.status}--created on ${t.createdAt}--updated on ${t.UpdatedAt}`)
+    );
 }
